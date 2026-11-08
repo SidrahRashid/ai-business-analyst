@@ -1,6 +1,15 @@
 # Camellia AI Business Analyst & Executive Intelligence Terminal
 **Enterprise AI Business Analyst & Power BI Intelligence Portal powered by DuckDB OLAP & Google Gemini AI.**
 
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![DuckDB](https://img.shields.io/badge/DuckDB-1.0+-FFF000.svg?style=flat&logo=duckdb&logoColor=black)](https://duckdb.org)
+[![Google Gemini](https://img.shields.io/badge/Google_Gemini-2.5_Flash-4285F4.svg?style=flat&logo=google&logoColor=white)](https://aistudio.google.com/)
+[![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+> 🌐 **Live Public Application:** `https://your-app-name.onrender.com` *(Update with your deployed link)*  
+> 🔑 **1-Click Demo Login:** `client_alpha` or `client_beta` | **Password:** `password123`
+
 ---
 
 ## 1. Executive System Overview
@@ -64,6 +73,7 @@ ai-business-analyst/
 ├── cache_provider.py           # Multi-worker shared file/in-memory cache
 ├── glossary_manager.py         # Dynamic business jargon & formula dictionary
 │
+├── Procfile                    # Cloud platform process launcher (Render / Railway)
 ├── requirements.txt            # Python dependencies
 ├── run.bat                     # Single-click Windows server launcher
 ├── .env.example                # Sample environment variables template
@@ -73,18 +83,18 @@ ai-business-analyst/
 
 ---
 
-## 3. Quickstart & Running the Application
+## 3. Quickstart: Local Setup
 
 ### Prerequisites
 * Python 3.10+ (Python 3.12 recommended)
-* A Google Gemini API key (free from [Google AI Studio](https://aistudio.google.com/)) or OpenAI API key.
+* A Google Gemini API key (Free tier from [Google AI Studio](https://aistudio.google.com/)) or OpenAI API key.
 
 ### 1. Environment Setup
-Create a `.env` file in the root directory from `.env.example`:
+Create a `.env` file from the provided `.env.example`:
 ```bash
 cp .env.example .env
 ```
-Add your Gemini or OpenAI API key inside `.env`:
+Open `.env` and insert your Gemini API key:
 ```env
 GEMINI_API_KEY=AIzaSy...
 ```
@@ -100,14 +110,14 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 3. Launch the Server
+### 3. Launch Local Server
 
-**Option A: One-Click Launch (Windows)**
+**One-Click (Windows):**
 ```cmd
 run.bat
 ```
 
-**Option B: Manual Launch**
+**Terminal:**
 ```powershell
 python -m uvicorn server:app --host 127.0.0.1 --port 8000
 ```
@@ -115,18 +125,75 @@ Open **[http://127.0.0.1:8000](http://127.0.0.1:8000)** in your browser.
 
 ---
 
-## 4. Pre-Configured Enterprise Demo Accounts
+## 4. Cloud Deployment (Render.com / Railway)
+
+This repository includes a `Procfile` configured for 1-click cloud deployment.
+
+### Deploying to Render.com (100% Free Tier):
+1. **Push your code to GitHub** (see Section 6).
+2. Log into **[dashboard.render.com](https://dashboard.render.com/)** and click **New +** &rarr; **Web Service**.
+3. Select your GitHub repository `ai-business-analyst`.
+4. Configure service settings:
+   * **Runtime:** `Python 3`
+   * **Build Command:** `pip install -r requirements.txt`
+   * **Start Command:** `uvicorn server:app --host 0.0.0.0 --port $PORT`
+   * **Instance Type:** `Free`
+5. Under **Environment Variables**, add:
+   * `GEMINI_API_KEY` = `your_gemini_api_key_here`
+   * `CACHE_BACKEND` = `file`
+6. Click **Create Web Service**. Your app will be live at `https://<your-service-name>.onrender.com` in ~2 minutes!
+
+---
+
+## 5. Pre-Configured Enterprise Demo Accounts
 
 | Client ID | Display Name | Industry Domain | Data Scope |
 | :--- | :--- | :--- | :--- |
 | **`client_alpha`** | **Himalayan Estate Teas & Auctions** | Darjeeling, Assam & Nilgiri Auction Lots | 4,800 Audited Lots |
 | **`client_beta`** | **Zenith Artisanal Blends & Retail** | D2C Specialty Blends & Global Boutiques | 4,800 Sales Orders |
 
-*Default password for both demo accounts:* **`password123`** *(or click the 1-click login card on the login screen)*
+*Default password for both accounts:* **`password123`** *(or click the demo card on the login screen)*
 
 ---
 
-## 5. Running Automated Verification Suites
+## 6. How to Upload to GitHub
+
+Follow these steps to upload your project to GitHub safely without exposing secret keys:
+
+### Step 1: Initialize & Verify Privacy Guard
+The project `.gitignore` already protects `.env`, `.venv/`, `data/cache/`, and log files.
+
+Verify that your working tree is clean:
+```powershell
+git status
+```
+
+### Step 2: Create a New GitHub Repository
+1. Go to [github.com/new](https://github.com/new).
+2. Set Repository Name to: `ai-business-analyst`
+3. Set Description to:
+   > `Enterprise AI Business Analyst & Power BI Terminal with DuckDB Star-Schema OLAP and Google Gemini 2.5 Flash.`
+4. Leave "Add a README file" **UNCHECKED** (we already have a complete README).
+5. Click **Create repository**.
+
+### Step 3: Link & Push
+Run the following commands in your terminal (replace `<YOUR_GITHUB_USERNAME>` with your GitHub username):
+```powershell
+git remote add origin https://github.com/<YOUR_GITHUB_USERNAME>/ai-business-analyst.git
+git push -u origin main
+```
+
+### Step 4: Add Public Link to GitHub Repo "About"
+Once pushed:
+1. On your GitHub repository homepage, look at the top-right **About** box and click the **⚙️ (cog icon)**.
+2. Under **Website**, paste your live deployed URL (e.g. `https://ai-business-analyst.onrender.com`).
+3. Under **Topics**, add:
+   `fastapi`, `duckdb`, `gemini-api`, `business-intelligence`, `olap`, `power-bi`, `data-analytics`, `python`
+4. Click **Save changes**.
+
+---
+
+## 7. Running Automated Verification Suites
 
 Execute tests with your active environment:
 ```powershell
@@ -137,56 +204,6 @@ python tests/verify_multiselect.py
 python tests/verify_briefing.py
 python tests/verify_chat_fixes.py
 ```
-
----
-
-## 6. How to Upload This Project to GitHub
-
-Follow these exact steps to push this project to a new GitHub repository securely:
-
-### Step 1: Ensure Secrets & Caches are Excluded
-Check that `.env` is ignored and only `.env.example` will be tracked:
-```powershell
-git status --ignored
-```
-*(Verify `.env` and `.venv/` appear under Untracked / Ignored files)*
-
-### Step 2: Initialize Git Repository
-```powershell
-git init
-git branch -M main
-```
-
-### Step 3: Stage and Commit the Code
-```powershell
-git add .
-git status
-```
-Confirm that:
-* ✅ `.env` is **NOT** listed.
-* ✅ `.venv/` is **NOT** listed.
-* ✅ `data/cache/` is **NOT** listed.
-
-Commit the files:
-```powershell
-git commit -m "Initial commit: Camellia AI Business Analyst & Executive Intelligence Terminal"
-```
-
-### Step 4: Link Your GitHub Repository and Push
-1. Create a new repository on [GitHub](https://github.com/new) (e.g. `ai-business-analyst`), leave it empty (without initializing README/license).
-2. Run the following commands (replace `<YOUR_USERNAME>` with your GitHub username):
-```powershell
-git remote add origin https://github.com/<YOUR_USERNAME>/ai-business-analyst.git
-git push -u origin main
-```
-
----
-
-## 7. Executive Intelligence Dossier & Dual Exports
-
-1. **📥 Export Matrix CSV (`/api/reports/export_matrix`):** Exports the aggregated **Commercial Performance Matrix** matching currently active slicers and displayed columns.
-2. **📥 Export Ledger CSV (`/api/reports/export`):** Streams the curated transaction ledger directly to Excel matching active filters.
-3. **📑 Executive Intelligence Dossier:** One-click board-ready executive report with print-to-PDF formatting and live Q&A summaries.
 
 ---
 
