@@ -607,9 +607,18 @@ function renderAssistantMessage(data) {
     `;
   }
 
+  // AI Provenance Badge
+  let badgeHtml = '';
+  if (data.is_ai_generated) {
+    badgeHtml = `<div class="ai-provenance-badge ai-badge-live" title="Generated in real-time by ${escapeHtml(data.ai_engine || 'Google Gemini')}">✨ Live AI Synthesized (${escapeHtml(data.ai_engine || 'Google Gemini')})</div>`;
+  } else {
+    badgeHtml = `<div class="ai-provenance-badge ai-badge-fallback" title="Calculated with 100% deterministic mathematical precision by DuckDB/Pandas. (Gemini API was unavailable or reached quota limit)">📐 Grounded Math Engine (Deterministic Fallback)</div>`;
+  }
+
   msg.innerHTML = `
     <div class="chat-avatar">🍵</div>
     <div class="chat-bubble" style="width: 100%;">
+      ${badgeHtml}
       <div class="narrative-card">
         <div class="narrative-lead">${formatRichText(data.answer || '')}</div>
         ${chartHtml}

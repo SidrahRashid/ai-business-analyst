@@ -32,6 +32,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 
 _AI_AVAILABLE = True
 _AI_LAST_CHECK = 0.0
+_LAST_AI_SOURCE = "deterministic_fallback"
 
 def is_ai_available() -> bool:
     global _AI_AVAILABLE, _AI_LAST_CHECK
@@ -49,13 +50,18 @@ def mark_ai_failed():
     _AI_AVAILABLE = False
     _AI_LAST_CHECK = time.time()
 
+def get_last_ai_source() -> str:
+    global _LAST_AI_SOURCE
+    return _LAST_AI_SOURCE
+
 # Aliases for backwards compatibility
 is_openai_available = is_ai_available
 mark_openai_failed = mark_ai_failed
 
 
-def call_llm_json(system_prompt: str, user_prompt: str, timeout: float = 12.0) -> Optional[Dict[str, Any]]:
+def call_llm_json(system_prompt: str, user_prompt: str, timeout: float = 8.0) -> Optional[Dict[str, Any]]:
     """Calls Gemini or OpenAI to get structured JSON output with automatic failover."""
+    global _LAST_AI_SOURCE
     if not is_ai_available():
         return None
 
@@ -74,15 +80,18 @@ def call_llm_json(system_prompt: str, user_prompt: str, timeout: float = 12.0) -
                         "responseMimeType": "application/json"
                     }
                 }
-                resp = requests.post(url, json=body, timeout=min(timeout, 12.0))
+                resp = requests.post(url, json=body, timeout=min(timeout, 6.0))
                 if resp.status_code == 200:
                     res_data = resp.json()
                     raw_text = res_data["candidates"][0]["content"]["parts"][0]["text"]
+                    _LAST_AI_SOURCE = f"Google Gemini ({model})"
                     return json.loads(raw_text)
                 elif resp.status_code == 429:
-                    print(f"[GEMINI RATE LIMIT on {model}] {resp.text}")
+                    print(f"[GEMINI RATE LIMIT on {model}] Quota exceeded. Marking AI unavailable temporarily.")
+                    mark_ai_failed()
+                    break
                 else:
-                    print(f"[GEMINI ERROR {resp.status_code} on {model}] {resp.text}")
+                    print(f"[GEMINI ERROR {resp.status_code} on {model}] {resp.text[:120]}")
             except Exception as e:
                 print(f"[GEMINI EXCEPTION on {model}] {e}")
 
@@ -101,21 +110,22 @@ def call_llm_json(system_prompt: str, user_prompt: str, timeout: float = 12.0) -
                 temperature=0.1
             )
             raw = res.choices[0].message.content or "{}"
+            _LAST_AI_SOURCE = "OpenAI (gpt-4o-mini)"
             return json.loads(raw)
         except Exception as e:
             err_msg = str(e).lower()
             if any(k in err_msg for k in ["quota", "429", "rate", "credit_balance_exhausted"]):
                 print(f"[OPENAI QUOTA EXHAUSTED] {e}")
-                if not gemini_key:
-                    mark_ai_failed()
+                mark_ai_failed()
             else:
                 print(f"[OPENAI EXCEPTION] {e}")
 
     return None
 
 
-def call_llm_text(system_prompt: str, user_prompt: str, timeout: float = 12.0) -> Optional[str]:
+def call_llm_text(system_prompt: str, user_prompt: str, timeout: float = 8.0) -> Optional[str]:
     """Calls Gemini or OpenAI to get natural language narrative text with automatic failover."""
+    global _LAST_AI_SOURCE
     if not is_ai_available():
         return None
 
@@ -133,17 +143,19 @@ def call_llm_text(system_prompt: str, user_prompt: str, timeout: float = 12.0) -
                         "temperature": 0.2
                     }
                 }
-                resp = requests.post(url, json=body, timeout=min(timeout, 12.0))
+                resp = requests.post(url, json=body, timeout=min(timeout, 6.0))
                 if resp.status_code == 200:
                     res_data = resp.json()
+                    _LAST_AI_SOURCE = f"Google Gemini ({model})"
                     return res_data["candidates"][0]["content"]["parts"][0]["text"].strip()
                 elif resp.status_code == 429:
-                    print(f"[GEMINI RATE LIMIT on {model}] {resp.text}")
+                    print(f"[GEMINI RATE LIMIT on {model}] Quota exceeded. Marking AI unavailable temporarily.")
+                    mark_ai_failed()
+                    break
                 else:
-                    print(f"[GEMINI ERROR {resp.status_code} on {model}] {resp.text}")
+                    print(f"[GEMINI ERROR {resp.status_code} on {model}] {resp.text[:120]}")
             except Exception as e:
                 print(f"[GEMINI EXCEPTION on {model}] {e}")
-
 
     # 2. Try OpenAI
     openai_key = os.getenv("OPENAI_API_KEY", "").strip()
@@ -158,13 +170,13 @@ def call_llm_text(system_prompt: str, user_prompt: str, timeout: float = 12.0) -
                 ],
                 temperature=0.2
             )
+            _LAST_AI_SOURCE = "OpenAI (gpt-4o-mini)"
             return (res.choices[0].message.content or "").strip()
         except Exception as e:
             err_msg = str(e).lower()
             if any(k in err_msg for k in ["quota", "429", "rate", "credit_balance_exhausted"]):
                 print(f"[OPENAI QUOTA EXHAUSTED] {e}")
-                if not gemini_key:
-                    mark_ai_failed()
+                mark_ai_failed()
             else:
                 print(f"[OPENAI EXCEPTION] {e}")
 
@@ -520,32 +532,7 @@ def classify_dataset_columns(df: Optional[pd.DataFrame], profile: Dict[str, Any]
         except Exception:
             pass
 
-    # Try AI classification if LLM is available (Gemini or OpenAI)
-    if is_ai_available():
-        prompt_data = {
-            "dimensions": [{"col": d["column"], "samples": d.get("sample_values", [])[:5]} for d in profile.get("dimensions", [])],
-            "measures": [{"col": m["column"], "sum": m.get("sum"), "min": m.get("min"), "max": m.get("max")} for m in profile.get("measures", [])],
-            "dates": [d["column"] for d in profile.get("dates", [])],
-        }
-        system_prompt = (
-            "You are an enterprise schema analyzer. For each column, determine:\n"
-            "1. role: 'primary_entity', 'category', 'product', 'channel', 'code', 'volume', 'monetary', 'rate', 'count', 'score', or 'date'\n"
-            "2. is_shadow: boolean (True if column is a code, abbreviation, or alternate shadow column of another primary column, e.g. DESCN or GLOCA or CODE)\n"
-            "3. priority: integer 0-10 (0 for primary business entity like estate/store, 1 for product/grade, 3 for channel/type, 8+ for codes)\n"
-            "4. formatting: 'quantity', 'currency', 'rate', 'percentage', 'count', 'score', or 'text'\n"
-            "5. unit: short unit symbol or word (e.g. 'kg', 'Rs.', 'USD', 'batches', '%')\n"
-            "Return JSON: {\"COL_NAME\": {\"role\": ..., \"is_shadow\": ..., \"priority\": ..., \"formatting\": ..., \"unit\": ...}}"
-        )
-        col_meta = call_llm_json(system_prompt, json.dumps(prompt_data))
-        if col_meta and isinstance(col_meta, dict) and len(col_meta) > 0:
-            try:
-                with open(cache_file, "w", encoding="utf-8") as f:
-                    json.dump(col_meta, f, indent=2)
-            except Exception:
-                pass
-            return col_meta
-
-    # Dynamic Statistical Classifier (Zero Hardcoding fallback)
+    # Dynamic Statistical Classifier (Zero API quota usage, instant 0ms execution)
     col_meta = {}
     all_dims = profile.get("dimensions", [])
     all_meas = profile.get("measures", [])
@@ -744,29 +731,7 @@ def build_dynamic_semantic_maps(profile: Dict[str, Any], client_id: Optional[str
         except Exception:
             pass
 
-    # Try AI generation if LLM is available (Gemini or OpenAI)
-    if is_ai_available():
-        prompt_data = {
-            "dimensions": [{"col": d["column"], "samples": d.get("sample_values", [])[:5]} for d in profile.get("dimensions", [])],
-            "measures": [m["column"] for m in profile.get("measures", [])]
-        }
-        system_prompt = (
-            "You are an NLP business schema mapper. For each column name, generate 8-12 English natural language phrases, "
-            "synonyms, and query terms that business users would use to ask questions about that column.\n"
-            "Return JSON: {\"dim_map\": {\"COL\": [\"syn1\", ...]}, \"meas_map\": {\"COL\": [\"syn1\", ...]}}"
-        )
-        res_json = call_llm_json(system_prompt, json.dumps(prompt_data))
-        if res_json and isinstance(res_json, dict) and ("dim_map" in res_json or "meas_map" in res_json):
-            dim_map = res_json.get("dim_map", {})
-            meas_map = res_json.get("meas_map", {})
-            try:
-                with open(cache_file, "w", encoding="utf-8") as f:
-                    json.dump({"dim_map": dim_map, "meas_map": meas_map}, f, indent=2)
-            except Exception:
-                pass
-            return dim_map, meas_map
-
-    # Dynamic Morphological & Role-Based Generator (Zero Hardcoding fallback)
+    # Dynamic Morphological & Role-Based Generator (Zero API quota usage, instant 0ms execution)
     dim_map = {}
     meas_map = {}
     

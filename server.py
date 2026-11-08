@@ -32,6 +32,7 @@ from analytics_engine import (
     format_indian_number,
     is_ai_available,
     call_llm_text,
+    get_last_ai_source,
 )
 
 app = FastAPI(title="Camellia Tea Atelier Portal", version="2.0.0")
@@ -1572,6 +1573,9 @@ def chat_query(
     # Persist session memory to cache provider (InMemory, FileShared, or Redis)
     cache_provider.set(session_key, updated_context, ttl_seconds=7200)
 
+    ai_source = get_last_ai_source()
+    is_live_ai = any(k in ai_source.lower() for k in ["gemini", "openai", "gpt"])
+
     return {
         "status": "success",
         "client_id": cid,
@@ -1586,6 +1590,8 @@ def chat_query(
         "explanation": explanation,
         "chart_data": chart_payload,
         "conversation_context": updated_context,
+        "ai_engine": ai_source,
+        "is_ai_generated": is_live_ai,
     }
 
 
