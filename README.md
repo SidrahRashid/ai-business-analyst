@@ -87,16 +87,12 @@ ai-business-analyst/
 
 ### Prerequisites
 * Python 3.10+ (Python 3.12 recommended)
-* A Google Gemini API key (Free tier from [Google AI Studio](https://aistudio.google.com/)) or OpenAI API key.
+* A Google Gemini API key.
 
 ### 1. Environment Setup
 Create a `.env` file from the provided `.env.example`:
 ```bash
 cp .env.example .env
-```
-Open `.env` and insert your Gemini API key:
-```env
-GEMINI_API_KEY=AIzaSy...
 ```
 
 ### 2. Install Dependencies
