@@ -1,0 +1,54 @@
+{
+  "client_id": "client_beta",
+  "schema_type": "Star Schema (Relational Data Model)",
+  "primary_fact_table": "fact_sales_orders",
+  "tables": {
+    "fact_sales_orders": {
+      "type": "FACT",
+      "file": "fact_sales_orders.csv",
+      "primary_key": "ORDER_ID",
+      "foreign_keys": {
+        "PRODUCT_ID": {
+          "references": "dim_products.PRODUCT_ID",
+          "relationship": "MANY_TO_ONE"
+        },
+        "CHANNEL_ID": {
+          "references": "dim_channels.CHANNEL_ID",
+          "relationship": "MANY_TO_ONE"
+        },
+        "REGION_ID": {
+          "references": "dim_regions.REGION_ID",
+          "relationship": "MANY_TO_ONE"
+        }
+      }
+    },
+    "dim_products": {
+      "type": "DIMENSION",
+      "file": "dim_products.csv",
+      "primary_key": "PRODUCT_ID",
+      "attributes": [
+        "PRODUCT_NAME",
+        "CATEGORY",
+        "PACKAGING"
+      ]
+    },
+    "dim_channels": {
+      "type": "DIMENSION",
+      "file": "dim_channels.csv",
+      "primary_key": "CHANNEL_ID",
+      "attributes": [
+        "SALES_CHANNEL",
+        "CHANNEL_TYPE"
+      ]
+    },
+    "dim_regions": {
+      "type": "DIMENSION",
+      "file": "dim_regions.csv",
+      "primary_key": "REGION_ID",
+      "attributes": [
+        "MARKET_REGION",
+        "LOCAL_CURRENCY"
+      ]
+    }
+  }
+}

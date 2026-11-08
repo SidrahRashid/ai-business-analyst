@@ -1,0 +1,51 @@
+TNO,STATUS,REGION,DAYS_IN_TRANSIT
+WB912274,Delivered,North,3
+WB912502,In Transit,East,5
+WB912551,Delivered,West,2
+WB912604,Delayed,South,7
+WB912699,Delivered,North,4
+WB912701,In Transit,East,6
+WB912729,Delivered,West,3
+WB912795,Delivered,North,2
+WB912819,In Transit,South,4
+WB912883,Delivered,East,1
+WB912927,Delayed,North,8
+WB912975,Delivered,West,3
+WB912977,Delivered,South,2
+WB913006,In Transit,North,5
+WB913253,Delivered,East,2
+WB913286,Delivered,West,3
+WB913359,In Transit,South,4
+WB913363,Delivered,North,1
+WB913512,Delayed,East,9
+WB913641,Delivered,West,2
+WB913670,Delivered,South,3
+WB913719,In Transit,North,4
+WB913763,Delivered,East,2
+WB913778,Delivered,West,1
+WB913788,Delivered,North,3
+WB913871,Delayed,South,6
+WB914283,Delivered,East,2
+WB914322,In Transit,West,5
+WB914504,Delivered,North,3
+WB914979,Delivered,South,2
+WB915374,In Transit,East,4
+WB915553,Delivered,West,1
+WB917419,Delivered,North,3
+WB917499,Delayed,South,7
+WB918370,Delivered,East,2
+WB918387,In Transit,West,4
+WB918475,Delivered,North,1
+WB918729,Delivered,South,3
+WB919227,Delivered,East,2
+WB919726,In Transit,West,5
+WB91B3359,Delivered,North,2
+WB91C7419,Delayed,South,8
+WB91C8117,Delivered,East,3
+WB952298,Delivered,West,2
+WB95B3537,In Transit,North,4
+WBE5367,Delivered,South,1
+WBF2610,Delivered,East,2
+WBF6749,In Transit,West,3
+WBHB0160,Delivered,North,2
+WG73G3207,Delayed,East,6

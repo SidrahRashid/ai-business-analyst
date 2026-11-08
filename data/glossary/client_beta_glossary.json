@@ -1,0 +1,33 @@
+{
+  "client_name": "Zenith Artisanal Blends & Retail",
+  "aliases": {
+    "realized turnover": "NET_SALES_USD",
+    "top line sales": "NET_SALES_USD",
+    "gross proceeds": "NET_SALES_USD",
+    "gross margin spread": "GROSS_MARGIN_PCT",
+    "margin pct": "GROSS_MARGIN_PCT",
+    "blend label": "PRODUCT_NAME",
+    "tea blend": "PRODUCT_NAME",
+    "merchandise type": "CATEGORY",
+    "pack format": "PACKAGING",
+    "container": "PACKAGING",
+    "fulfillment route": "SALES_CHANNEL",
+    "go to market": "SALES_CHANNEL",
+    "customer happiness": "CUSTOMER_RATING",
+    "star rating": "CUSTOMER_RATING",
+    "geographic territory": "MARKET_REGION",
+    "units dispatched": "UNITS_SOLD"
+  },
+  "formulas": {
+    "gross_profit_usd": {
+      "description": "Dollar gross profit per line item",
+      "formula": "NET_SALES_USD * (GROSS_MARGIN_PCT / 100.0)",
+      "target_type": "measure"
+    },
+    "average_selling_price": {
+      "description": "Realized price per unit",
+      "formula": "NET_SALES_USD / UNITS_SOLD",
+      "target_type": "measure"
+    }
+  }
+}

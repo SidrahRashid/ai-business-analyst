@@ -1,0 +1,73 @@
+{
+  "client_id": "client_alpha",
+  "schema_type": "Star Schema (Relational Data Model)",
+  "primary_fact_table": "fact_auction_lots",
+  "tables": {
+    "fact_auction_lots": {
+      "type": "FACT",
+      "file": "fact_auction_lots.csv",
+      "primary_key": "LOT_ID",
+      "foreign_keys": {
+        "ESTATE_ID": {
+          "references": "dim_estates.ESTATE_ID",
+          "relationship": "MANY_TO_ONE"
+        },
+        "GRADE_ID": {
+          "references": "dim_grades.GRADE_ID",
+          "relationship": "MANY_TO_ONE"
+        },
+        "BUYER_ID": {
+          "references": "dim_buyers.BUYER_ID",
+          "relationship": "MANY_TO_ONE"
+        }
+      }
+    },
+    "dim_estates": {
+      "type": "DIMENSION",
+      "file": "dim_estates.csv",
+      "primary_key": "ESTATE_ID",
+      "attributes": [
+        "ESTATE",
+        "REGION",
+        "ELEVATION_METERS",
+        "ORGANIC_CERTIFIED"
+      ]
+    },
+    "dim_grades": {
+      "type": "DIMENSION",
+      "file": "dim_grades.csv",
+      "primary_key": "GRADE_ID",
+      "attributes": [
+        "TEA_GRADE",
+        "LEAF_TYPE",
+        "PROCESSING_METHOD"
+      ]
+    },
+    "dim_buyers": {
+      "type": "DIMENSION",
+      "file": "dim_buyers.csv",
+      "primary_key": "BUYER_ID",
+      "attributes": [
+        "BUYER_NAME",
+        "BUYER_COUNTRY",
+        "BUYER_TIER"
+      ]
+    },
+    "fact_shipments": {
+      "type": "BRIDGE_FACT",
+      "file": "fact_shipments.csv",
+      "primary_key": "SHIPMENT_ID",
+      "foreign_keys": {
+        "LOT_ID": {
+          "references": "fact_auction_lots.LOT_ID",
+          "relationship": "ONE_TO_ONE"
+        }
+      },
+      "attributes": [
+        "SHIPMENT_STATUS",
+        "DAYS_IN_TRANSIT",
+        "LOGISTICS_CARRIER"
+      ]
+    }
+  }
+}

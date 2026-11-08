@@ -1,0 +1,40 @@
+{
+  "client_name": "Himalayan Estate Teas & Auctions",
+  "aliases": {
+    "realized gross inflow": "TOTAL_REVENUE_USD",
+    "gross turnover": "TOTAL_REVENUE_USD",
+    "auction proceeds": "TOTAL_REVENUE_USD",
+    "net payload": "VOLUME_KG",
+    "harvest payload": "VOLUME_KG",
+    "crop weight": "VOLUME_KG",
+    "tea garden": "ESTATE",
+    "gardens": "ESTATE",
+    "plantation": "ESTATE",
+    "plucking run": "SEASON_FLUSH",
+    "flush season": "SEASON_FLUSH",
+    "cupping rating": "QUALITY_SCORE",
+    "cupping score": "QUALITY_SCORE",
+    "cupping benchmark": "QUALITY_SCORE",
+    "cupping": "QUALITY_SCORE",
+    "moisture content": "MOISTURE_PCT",
+    "leaf moisture": "MOISTURE_PCT",
+    "clearing price": "PRICE_PER_KG_USD",
+    "hammer price": "PRICE_PER_KG_USD",
+    "transit lag": "DAYS_IN_TRANSIT",
+    "shipping lead time": "DAYS_IN_TRANSIT",
+    "carrier line": "LOGISTICS_CARRIER",
+    "importer nation": "BUYER_COUNTRY"
+  },
+  "formulas": {
+    "effective_yield": {
+      "description": "Calculates revenue realization per kilogram",
+      "formula": "TOTAL_REVENUE_USD / VOLUME_KG",
+      "target_type": "measure"
+    },
+    "transit_efficiency": {
+      "description": "Measures transit speed against baseline of 30 days",
+      "formula": "30 - DAYS_IN_TRANSIT",
+      "target_type": "metric"
+    }
+  }
+}

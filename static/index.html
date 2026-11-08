@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camellia Tea Atelier | Real-Data AI Business Analyst</title>
+  <meta name="description" content="Artisanal AI Business Analyst & Power BI Intelligence Portal for the Global Specialty Tea Trade.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍵</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="/static/style.css?v=2.2">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar" id="mainNavbar">
+    <div class="nav-brand">
+      <span class="brand-icon">🍵</span>
+      <div>
+        <div class="brand-title">CAMELLIA ATELIER</div>
+        <div class="brand-subtitle">Executive Tea Intelligence</div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs (Logged In) -->
+    <nav class="nav-tabs" id="navTabs" style="display: none;">
+      <button class="nav-tab-btn active" id="tabChatBtn">
+        <span>💬</span>
+        <span>Executive Chatbot</span>
+      </button>
+      <button class="nav-tab-btn" id="tabReportsBtn">
+        <span>📊</span>
+        <span>BI Report</span>
+      </button>
+    </nav>
+
+    <!-- User Profile / Session Controls (Logged In) -->
+    <div class="nav-user" id="navUserControls" style="display: none;">
+
+      <div class="client-chip">
+        <span class="client-chip-dot"></span>
+        <span class="client-chip-text" id="userClientName">Himalayan Estate Teas</span>
+      </div>
+      <button class="btn-secondary" id="btnLogout">Sign Out</button>
+    </div>
+  </header>
+
+  <!-- Main Application Container -->
+  <main class="container">
+
+    <!-- ==============================================================================
+         VIEW 1: AUTHENTICATION / ATELIER LOGIN SCREEN (Pinterest Style)
+         ============================================================================== -->
+    <section class="auth-wrapper" id="viewAuth">
+      <!-- Left Hero Pane -->
+      <div class="auth-hero-pane">
+        <img src="/static/assets/tea_atelier.jpg" alt="Botanical Tea Atelier" class="auth-hero-img">
+        <div class="auth-hero-gradient"></div>
+        <div class="auth-hero-content">
+          <span class="auth-badge">Enterprise Edition</span>
+          <h1 class="auth-hero-title">Artisanal Intelligence for the Global Tea Trade</h1>
+          <p class="auth-hero-desc">
+            Role-based executive portal unifying auction valuation, terroir moisture tracking, and specialty retail commerce with zero data leakage.
+          </p>
+        </div>
+      </div>
+
+      <!-- Right Form Pane -->
+      <div class="auth-form-pane">
+        <h2 class="auth-form-title">Enter the Atelier</h2>
+        <p class="auth-form-desc">Authenticate with your client credentials to access your audited tea ledger.</p>
+
+        <form id="loginForm" onsubmit="return false;">
+          <div class="form-group">
+            <label class="form-label" for="usernameInput">Client Identifier</label>
+            <input type="text" id="usernameInput" class="form-input" placeholder="e.g., client_alpha" required autocomplete="username">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="passwordInput">Secret Key</label>
+            <input type="password" id="passwordInput" class="form-input" placeholder="••••••••••••" required autocomplete="current-password">
+          </div>
+
+          <div id="loginError" style="color: var(--tea-terracotta); font-size: 0.82rem; margin-bottom: 12px; display: none;"></div>
+
+          <button type="button" id="btnLoginSubmit" class="btn-primary" style="width: 100%; padding: 12px;">
+            Access Tea Ledger
+          </button>
+        </form>
+
+        <div class="auth-divider">
+          <span>Or Test With Demo Clients</span>
+        </div>
+
+        <div class="quick-demo-accounts">
+          <div class="demo-account-card" id="demoAlphaBtn">
+            <div class="demo-account-info">
+              <h4>🍵 Himalayan Estate Teas & Auctions</h4>
+              <p>Darjeeling, Assam, Dooars & Nilgiri Auctions</p>
+            </div>
+            <span class="demo-account-badge">client_alpha</span>
+          </div>
+
+          <div class="demo-account-card" id="demoBetaBtn">
+            <div class="demo-account-info">
+              <h4>🍃 Zenith Artisanal Blends & Retail</h4>
+              <p>Matcha, Oolong & Rare Artisanal Blends</p>
+            </div>
+            <span class="demo-account-badge">client_beta</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==============================================================================
+         VIEW 2: CHATBOT VIEW (Maximized Chat Stream Space)
+         ============================================================================== -->
+    <section class="chat-container" id="viewChat" style="display: none;">
+      <!-- Hidden subtitle element to satisfy JS DOM binding without taking any vertical space -->
+      <span id="chatClientSubtitle" style="display: none;"></span>
+
+      <!-- Chat Stream: Maximized to occupy full vertical height -->
+      <div class="chat-stream" id="chatStream">
+        <!-- Messages rendered here -->
+      </div>
+
+      <!-- Suggested Question Pills: Compact single-row horizontal reel directly above input bar -->
+      <div class="suggested-chips-bar" id="suggestedChipsContainer">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Chat Input Field -->
+      <div class="chat-input-bar">
+        <input type="text" id="chatInputField" class="chat-input-field" placeholder="Ask about revenue, price per kg, quality variance, top grades...">
+        <button class="chat-send-btn" id="btnSendChat" title="Send Question">➔</button>
+      </div>
+    </section>
+
+    <!-- ==============================================================================
+         VIEW 3: POWER BI STANDARD REPORTS DASHBOARD
+         ============================================================================== -->
+    <section class="reports-dashboard" id="viewReports" style="display: none;">
+      
+      <!-- Power BI Slicer Ribbon: Responsive, unclipped, and cleanly displayed -->
+      <div class="slicer-ribbon-bar">
+        <div class="slicer-ribbon-scroll">
+          <div class="slicer-ribbon-left">
+            <div class="slicer-ribbon-title">
+              <span>🏷️</span>
+              <span>Slicers</span>
+            </div>
+
+            <!-- Dynamic Client Slicers Container -->
+            <div class="slicers-dynamic-container" id="slicersDynamicContainer"></div>
+
+            <!-- Reset Button -->
+            <button class="btn-ribbon-reset" id="btnResetSlicers" title="Reset all slicers to All">
+              <span>🔄</span> Reset
+            </button>
+            <span id="filteredCountText" style="display:none;"></span>
+          </div>
+
+          <!-- Quick Action Buttons on Right -->
+          <div class="ribbon-actions">
+            <button class="btn-ribbon-action" id="btnExportFilteredCsv" title="Export full transaction ledger as CSV">📥 CSV</button>
+            <button class="btn-ribbon-action" id="btnOpenExecutiveBriefing" title="View executive briefing">📄 Briefing</button>
+            <button class="btn-ribbon-primary" id="btnOpenCustomDossier" title="Generate audited executive dossier">📑 Dossier</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Power BI Standard 5 KPI Tiles -->
+      <div class="kpi-row">
+        <!-- Tile 1: Total Revenue -->
+        <div class="kpi-tile forest">
+          <div class="kpi-tile-header">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="kpi-icon">💰</span>
+              <span class="kpi-title" id="kpiLabelRevenue">Total Gross Revenue</span>
+            </div>
+          </div>
+          <div class="kpi-value" id="kpiValRevenue">Rs. 0.00</div>
+          <div class="kpi-subtitle" id="kpiSubRevenue">Value Leader Summary</div>
+        </div>
+
+        <!-- Tile 2: Total Volume -->
+        <div class="kpi-tile amber">
+          <div class="kpi-tile-header">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="kpi-icon">🍵</span>
+              <span class="kpi-title" id="kpiLabelVolume">Auction Volume Sold</span>
+            </div>
+          </div>
+          <div class="kpi-value" id="kpiValVolume">0.000 kgs</div>
+          <div class="kpi-subtitle" id="kpiSubVolume">Total Certified Output in kgs</div>
+        </div>
+
+        <!-- Tile 3: Realization / Margin -->
+        <div class="kpi-tile matcha">
+          <div class="kpi-tile-header">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="kpi-icon">📈</span>
+              <span class="kpi-title" id="kpiLabelRealization">Average Realization</span>
+            </div>
+          </div>
+          <div class="kpi-value" id="kpiValRealization">Rs. 0.00 / kg</div>
+          <div class="kpi-subtitle" id="kpiSubRealization">Weighted Realization Index (Rs./kg)</div>
+        </div>
+
+        <!-- Tile 4: Quality / Customer Rating -->
+        <div class="kpi-tile terracotta">
+          <div class="kpi-tile-header">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="kpi-icon">✨</span>
+              <span class="kpi-title" id="kpiLabelQuality">Cupping Score</span>
+            </div>
+          </div>
+          <div class="kpi-value" id="kpiValQuality">0.0 / 100</div>
+          <div class="kpi-subtitle" id="kpiSubQuality">Specialty Grading Benchmark</div>
+        </div>
+
+        <!-- Tile 5: Custom Client Metric (e.g. Total Batches for Plantation, Total Orders for Retail) -->
+        <div class="kpi-tile slate" id="kpiTileCustom">
+          <div class="kpi-tile-header">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="kpi-icon">📦</span>
+              <span class="kpi-title" id="kpiLabelCustom">Total Bags / Chests</span>
+            </div>
+          </div>
+          <div class="kpi-value" id="kpiValCustom">0 bags</div>
+          <div class="kpi-subtitle" id="kpiSubCustom">Audited Container Packings</div>
+        </div>
+      </div>
+
+      <!-- Power BI Visuals Grid: Row 1 -->
+      <div class="charts-grid">
+        <!-- Chart 1: Monthly Production & Revenue Trend -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h3 class="chart-card-title">
+              <span>📈</span>
+              <span id="trendChartTitle">Monthly Output & Revenue Trajectory</span>
+            </h3>
+            <span class="chart-card-tag" id="trendChartTag">Monthly Trend</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="trendChartCanvas"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Category / Flush Share Donut -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h3 class="chart-card-title">
+              <span>🍃</span>
+              <span id="donutChartTitle">Revenue Contribution by Category</span>
+            </h3>
+            <span class="chart-card-tag" id="donutChartTag">Portfolio Share</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="donutChartCanvas"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Power BI Visuals Grid: Row 2 -->
+      <div class="charts-row-secondary">
+        <!-- Chart 3: Top Performers Ranking Bar Chart -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h3 class="chart-card-title">
+              <span>🏆</span>
+              <span id="rankingChartTitle">Top 8 Revenue Leaders</span>
+            </h3>
+            <span class="chart-card-tag" id="rankingChartTag">Leaderboard</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="rankingChartCanvas"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 4: Channel / Region Spread -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h3 class="chart-card-title">
+              <span>🌐</span>
+              <span id="channelChartTitle">Channel & Market Distribution</span>
+            </h3>
+            <span class="chart-card-tag" id="channelChartTag">Routes-to-Market</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="channelChartCanvas"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Power BI Matrix Summary Table -->
+      <div class="matrix-card">
+        <div class="chart-card-header" style="margin-bottom: 0;">
+          <h3 class="chart-card-title">
+            <span>📋</span>
+            <span id="matrixTableTitle">Commercial Performance Matrix</span>
+          </h3>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button class="btn-secondary" id="btnExportMatrixCsv" title="Export full matrix table as CSV" style="font-size: 0.8rem; padding: 6px 12px;">📥 Export Matrix CSV</button>
+            <span class="chart-card-tag">Aggregated Summary</span>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="matrix-table" id="matrixDataTable">
+            <thead>
+              <tr id="matrixHeaderRow">
+                <th>Classification</th>
+                <th>Volume (kgs)</th>
+                <th>Total Value (Rs.)</th>
+                <th>Unit Realization / Margin</th>
+                <th>Portfolio Share</th>
+              </tr>
+            </thead>
+            <tbody id="matrixTableBody">
+              <!-- Rendered dynamically via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Audited Records Explorer: Curated Executive Lot Ledger -->
+      <div class="records-card">
+        <div class="records-toolbar">
+          <div>
+            <h3 class="chart-card-title">
+              <span>📜</span>
+              <span id="ledgerCardTitle">Executive Lot Ledger</span>
+            </h3>
+            <p id="ledgerCardSubtitle" style="font-size: 0.78rem; color: var(--text-muted); margin-top: 3px;">
+              Curated operational transaction preview. Full ledger available via <strong>📥 Export CSV</strong>.
+            </p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <div class="search-box">
+              <span class="search-icon">🔎</span>
+              <input type="text" id="recordSearchInput" class="search-input" placeholder="Filter preview lots...">
+            </div>
+            <button class="btn-secondary" id="btnExportLedgerCsv" title="Export curated transaction ledger as CSV" style="font-size: 0.8rem; padding: 6px 12px;">📥 Export Ledger CSV</button>
+          </div>
+        </div>
+        <div class="table-responsive" style="max-height: 380px; overflow-y: auto;">
+          <table class="data-table" id="rawDataTable">
+            <thead id="rawTableHead"></thead>
+            <tbody id="rawTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Executive Management Briefing Modal -->
+  <div class="modal-overlay" id="briefingModal">
+    <div class="modal-content">
+      <button class="modal-close-btn" id="btnCloseBriefing" title="Close">✕</button>
+      <div id="briefingModalBody">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid var(--border-light); padding-bottom: 12px;">
+          <div>
+            <h2 style="color: var(--tea-forest); margin-bottom: 4px; font-size: 1.25rem;">Executive Management Briefing</h2>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0;">Grounded synthesis from active filtered ledger.</p>
+          </div>
+        </div>
+        <div id="briefingContentPlaceholder">Loading executive synthesis...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customized Executive Dossier & Report Modal -->
+  <div class="modal-overlay" id="customDossierModal">
+    <div class="modal-content dossier-modal-content">
+      <button class="modal-close-btn" id="btnCloseCustomDossier" title="Close">✕</button>
+      <div class="dossier-actions-bar">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 1.2rem;">📑</span>
+          <div>
+            <h2 style="font-size: 1.15rem; color: var(--tea-forest); margin: 0;">Executive Intelligence Dossier</h2>
+            <div style="font-size: 0.76rem; color: var(--text-muted);" id="dossierSubtitle">Customized Report & Analyst Q&A</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn-secondary" id="btnPrintDossier" style="padding: 6px 12px; font-size: 0.78rem;">🖨️ Print / PDF</button>
+          <button class="btn-primary" id="btnDownloadHtmlDossier" style="padding: 6px 12px; font-size: 0.78rem;">📥 Download Dossier</button>
+        </div>
+      </div>
+
+      <div class="dossier-scroll-body" id="dossierModalBody">
+        <!-- Rendered dynamically in app.js -->
+        <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+          Compiling your customized executive dossier...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js?v=2.5"></script>
+</body>
+</html>

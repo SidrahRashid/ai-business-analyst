@@ -1,0 +1,11 @@
+ACCOUNT_ID,CLIENT_SEGMENT,PORTFOLIO_VALUE,STATUS,ANNUAL_RETURN_PCT
+ACC-1001,Corporate,1250000.00,Active,8.4
+ACC-1002,Institutional,4500000.00,Active,11.2
+ACC-1003,Retail High-Net,820000.00,Active,6.8
+ACC-1004,Corporate,2100000.00,Pending,5.2
+ACC-1005,Institutional,7800000.00,Active,14.1
+ACC-1006,Retail High-Net,650000.00,Active,7.0
+ACC-1007,Corporate,3400000.00,Active,9.3
+ACC-1008,Institutional,5600000.00,Review,4.1
+ACC-1009,Retail High-Net,910000.00,Active,8.0
+ACC-1010,Corporate,1850000.00,Active,7.6
