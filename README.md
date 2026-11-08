@@ -125,27 +125,8 @@ Open **[http://127.0.0.1:8000](http://127.0.0.1:8000)** in your browser.
 
 ---
 
-## 4. Cloud Deployment (Render.com / Railway)
 
-This repository includes a `Procfile` configured for 1-click cloud deployment.
-
-### Deploying to Render.com (100% Free Tier):
-1. **Push your code to GitHub** (see Section 6).
-2. Log into **[dashboard.render.com](https://dashboard.render.com/)** and click **New +** &rarr; **Web Service**.
-3. Select your GitHub repository `ai-business-analyst`.
-4. Configure service settings:
-   * **Runtime:** `Python 3`
-   * **Build Command:** `pip install -r requirements.txt`
-   * **Start Command:** `uvicorn server:app --host 0.0.0.0 --port $PORT`
-   * **Instance Type:** `Free`
-5. Under **Environment Variables**, add:
-   * `GEMINI_API_KEY` = `your_gemini_api_key_here`
-   * `CACHE_BACKEND` = `file`
-6. Click **Create Web Service**. Your app will be live at `https://<your-service-name>.onrender.com` in ~2 minutes!
-
----
-
-## 5. Pre-Configured Enterprise Demo Accounts
+## 4. Pre-Configured Enterprise Demo Accounts
 
 | Client ID | Display Name | Industry Domain | Data Scope |
 | :--- | :--- | :--- | :--- |
@@ -156,61 +137,4 @@ This repository includes a `Procfile` configured for 1-click cloud deployment.
 
 ---
 
-## 6. How to Upload to GitHub
 
-Follow these steps to upload your project to GitHub safely without exposing secret keys:
-
-### Step 1: Initialize & Verify Privacy Guard
-The project `.gitignore` already protects `.env`, `.venv/`, `data/cache/`, and log files.
-
-Verify that your working tree is clean:
-```powershell
-git status
-```
-
-### Step 2: Create a New GitHub Repository
-1. Go to [github.com/new](https://github.com/new).
-2. Set Repository Name to: `ai-business-analyst`
-3. Set Description to:
-   > `Enterprise AI Business Analyst & Power BI Terminal with DuckDB Star-Schema OLAP and Google Gemini 2.5 Flash.`
-4. Leave "Add a README file" **UNCHECKED** (we already have a complete README).
-5. Click **Create repository**.
-
-### Step 3: Link & Push
-Run the following commands in your terminal (replace `<YOUR_GITHUB_USERNAME>` with your GitHub username):
-```powershell
-git remote add origin https://github.com/<YOUR_GITHUB_USERNAME>/ai-business-analyst.git
-git push -u origin main
-```
-
-### Step 4: Add Public Link to GitHub Repo "About"
-Once pushed:
-1. On your GitHub repository homepage, look at the top-right **About** box and click the **⚙️ (cog icon)**.
-2. Under **Website**, paste your live deployed URL (e.g. `https://ai-business-analyst.onrender.com`).
-3. Under **Topics**, add:
-   `fastapi`, `duckdb`, `gemini-api`, `business-intelligence`, `olap`, `power-bi`, `data-analytics`, `python`
-4. Click **Save changes**.
-
----
-
-## 7. Running Automated Verification Suites
-
-Execute tests with your active environment:
-```powershell
-python tests/test_tea_server.py
-python tests/test_overcome_limitations.py
-python tests/test_api_upgrades.py
-python tests/verify_multiselect.py
-python tests/verify_briefing.py
-python tests/verify_chat_fixes.py
-```
-
----
-
-## 8. Strategic Enterprise Roadmap
-
-See [docs/ENTERPRISE_ROADMAP.md](docs/ENTERPRISE_ROADMAP.md) for the strategic plan, including:
-* **Pillar 1:** Predictive & Prescriptive Scenario Modeling (Interactive "What-If" Sandbox)
-* **Pillar 2:** Executive Delivery (Automated 8:00 AM WhatsApp/Email Briefings, Server-Side Vector PDFs)
-* **Pillar 3:** Enterprise Scaling (Change Data Capture [CDC], Multi-Tenant RBAC Governance)
-* **Pillar 4:** Plantation Agricultural Supply Chain Expansion (Green Leaf Outturn %)
