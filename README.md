@@ -7,7 +7,7 @@
 [![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> 🌐 **Live Public Application:** `https://your-app-name.onrender.com` *(Update with your deployed link)*  
+> 🌐 **Live Public Application:** [https://ai-business-analyst-amuj.onrender.com](https://ai-business-analyst-amuj.onrender.com)  
 > 🔑 **1-Click Demo Login:** `client_alpha` or `client_beta` | **Password:** `password123`
 
 ---

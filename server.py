@@ -8,6 +8,7 @@ chatbot, and the Pinterest-style frontend.
 import os
 import io
 import re
+from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
 
 import pandas as pd
