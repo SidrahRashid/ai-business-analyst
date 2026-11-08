@@ -68,7 +68,7 @@ def call_llm_json(system_prompt: str, user_prompt: str, timeout: float = 8.0) ->
     # 1. Try Google Gemini first (Supports 100% Free Tier at Google AI Studio)
     gemini_key = os.getenv("GEMINI_API_KEY", "").strip()
     if gemini_key:
-        for model in ["gemini-3.5-flash", "gemini-3-flash-preview", "gemini-2.5-flash", "gemini-flash-latest", "gemini-flash-lite-latest"]:
+        for model in ["gemini-flash-lite-latest", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-3.5-flash"]:
             try:
                 import requests
                 url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={gemini_key}"
@@ -132,7 +132,7 @@ def call_llm_text(system_prompt: str, user_prompt: str, timeout: float = 8.0) ->
     # 1. Try Google Gemini first
     gemini_key = os.getenv("GEMINI_API_KEY", "").strip()
     if gemini_key:
-        for model in ["gemini-3.5-flash", "gemini-3-flash-preview", "gemini-2.5-flash", "gemini-flash-latest", "gemini-flash-lite-latest"]:
+        for model in ["gemini-flash-lite-latest", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-3.5-flash"]:
             try:
                 import requests
                 url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={gemini_key}"
