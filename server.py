@@ -1321,6 +1321,9 @@ def chat_query(
             "Show monthly volume and revenue trajectory"
         ]
 
+        ai_source = get_last_ai_source() if ai_ans else "deterministic_fallback"
+        is_live_ai = bool(ai_ans) and any(k in ai_source.lower() for k in ["gemini", "openai", "gpt"])
+
         return {
             "status": "success",
             "client_id": cid,
@@ -1334,6 +1337,8 @@ def chat_query(
             "followup_questions": greet_followups,
             "explanation": ai_ans,
             "chart_data": None,
+            "ai_engine": ai_source,
+            "is_ai_generated": is_live_ai,
         }
 
     # 2. Truly out-of-scope non-business requests (poems, jokes, recipes)
@@ -1354,6 +1359,8 @@ def chat_query(
             "followup_questions": ["What is total commercial revenue?", "Show top revenue performers."],
             "explanation": "Out of scope inquiry.",
             "chart_data": None,
+            "ai_engine": "Policy Filter",
+            "is_ai_generated": False,
         }
 
     # 3. Create plan with client context and dynamic glossary
@@ -1376,6 +1383,8 @@ def chat_query(
             "followup_questions": ["What is total revenue?", "Which entity leads volume?"],
             "explanation": val_err,
             "chart_data": None,
+            "ai_engine": "Validation Guard",
+            "is_ai_generated": False,
         }
 
     # 5. Execute deterministic pandas analysis
@@ -1391,6 +1400,8 @@ def chat_query(
             "followup_questions": ["What is the total revenue?", "Show monthly trajectory."],
             "explanation": calc_res.get("message", "Error"),
             "chart_data": None,
+            "ai_engine": "Calculation Guard",
+            "is_ai_generated": False,
         }
 
     # 6. Generate narrative
