@@ -1808,15 +1808,18 @@ def get_system_architecture(
     }
 
 
-# Mount static assets
-os.makedirs("static", exist_ok=True)
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# Mount static assets with absolute path resolution
+BASE_DIR = Path(__file__).resolve().parent
+STATIC_DIR = BASE_DIR / "static"
+STATIC_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 @app.get("/", response_class=HTMLResponse)
+@app.get("/index.html", response_class=HTMLResponse)
 def index():
     """Serves the Single Page Application."""
-    index_path = os.path.join("static", "index.html")
-    if os.path.exists(index_path):
+    index_path = STATIC_DIR / "index.html"
+    if index_path.exists():
         with open(index_path, "r", encoding="utf-8") as f:
             return f.read()
     return "<h1>Camellia Analytics Portal</h1><p>Static frontend files initializing.</p>"
